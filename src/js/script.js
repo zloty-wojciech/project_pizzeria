@@ -113,7 +113,7 @@
         }
 
         /* toggle active class on thisProduct.element */
-        thisProduct.element.toggleAttribute('active');
+        thisProduct.element.classList.toggle('active');
 
       });
     }
@@ -143,8 +143,6 @@
 
     processOrder(){
       const thisProduct = this;
-
-      console.log('processOrder', this.processOrder);
 
       // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
