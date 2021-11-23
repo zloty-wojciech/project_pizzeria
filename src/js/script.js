@@ -161,7 +161,7 @@
         for(let optionId in param.options) {
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId];
-         // console.log('option', optionId, option);
+          // console.log('option', optionId, option);
 
           // check if there is param with a name of paramId in formData and if it includes optionId
           if (formData[paramId] && formData[paramId].includes(optionId)) {
@@ -195,6 +195,9 @@
         }
       }
 
+      /* multiply price by amount */
+      price *= thisProduct.amountWidget.value;
+
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
     }
@@ -203,6 +206,7 @@
       const thisProduct = this;
 
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+      thisProduct.amountWidgetElem = new Event(thisProduct.processOrder);
     }
   }
 
@@ -212,6 +216,7 @@
 
       thisWidget.getElements(element);
       thisWidget.setValue(thisWidget.input.value);
+      thisWidget.announce();
       thisWidget.initActions();
 
       console.log('AmountWidget', thisWidget);
@@ -241,12 +246,12 @@
         thisWidget.value = newValue;
       }
 
-      if (thisWidget.value !== settings.amountWidget.defaultMin) {
-        thisWidget.value = newValue;
+      if (newValue < settings.amountWidget.defaultMin) {
+        newValue = settings.amountWidget.defaultMin;
       }
 
-      if (thisWidget.value !== settings.amountWidget.defaultMax) {
-        thisWidget.value = newValue;
+      if (newValue > settings.amountWidget.defaultMax) {
+        newValue = settings.amountWidget.defaultMax;
       }
 
       thisWidget.value = newValue;
@@ -270,6 +275,13 @@
         thisWidget.setValue(thisWidget.value+1);
       });
     }
+
+    announce(){
+      const thisWidget = this;
+
+      const event = new Event('updated');
+      thisWidget.element.dispatchEvent(event);
+    }
   }
 
   const app = {
@@ -291,11 +303,11 @@
 
     init: function(){
       const thisApp = this;
-     // console.log('*** App starting ***');
-     // console.log('thisApp:', thisApp);
-     // console.log('classNames:', classNames);
-     // console.log('settings:', settings);
-     // console.log('templates:', templates);
+      // console.log('*** App starting ***');
+      // console.log('thisApp:', thisApp);
+      // console.log('classNames:', classNames);
+      // console.log('settings:', settings);
+      // console.log('templates:', templates);
 
       thisApp.initData();
 
