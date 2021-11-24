@@ -166,13 +166,13 @@
           // check if there is param with a name of paramId in formData and if it includes optionId
           if (formData[paramId] && formData[paramId].includes(optionId)) {
             // check if the option is not default
-            if (formData[paramId].includes(optionId)) {
+            if (formData[paramId].includes(optionId) && !option.default) {
               // add option price to price variable
               price += option.price;
             }
           } else {
             // check if the option is default
-            if (formData[paramId].includes('default')) {
+            if (option.default) {
               // reduce price variable
               price -= option.price;
             }
@@ -235,26 +235,26 @@
     setValue(value){
       const thisWidget = this;
 
+      if (!value || isNaN(value)) {
+        thisWidget.value = settings.amountWidget.defaultValue;
+        thisWidget.input.value = thisWidget.value;
+        return;
+      }
       const newValue = parseInt(value);
 
       /* TODO: Add validation */
       if (thisWidget.value !== newValue) {
         thisWidget.value = newValue;
       }
-
-      if (thisWidget.value !== newValue && !isNaN(newValue)) {
-        thisWidget.value = newValue;
-      }
-
+      
       if (newValue < settings.amountWidget.defaultMin) {
-        newValue = settings.amountWidget.defaultMin;
+        thisWidget.value = settings.amountWidget.defaultMin;
       }
 
       if (newValue > settings.amountWidget.defaultMax) {
-        newValue = settings.amountWidget.defaultMax;
+        thisWidget.value = settings.amountWidget.defaultMax;
       }
 
-      thisWidget.value = newValue;
       thisWidget.input.value = thisWidget.value;
     }
 
@@ -262,7 +262,7 @@
       const thisWidget = this;
 
       thisWidget.input.addEventListener('change', function() {
-        thisWidget.setValue(1);
+        thisWidget.setValue(thisWidget.input);
       });
 
       thisWidget.linkDecrease.addEventListener('click', function(event){
