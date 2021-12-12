@@ -244,25 +244,20 @@
     addToCart(){
       const thisProduct = this;
 
-      app.cart.add(thisProduct);
-
-      app.cart.add(thisProduct.productSummary);
+      app.cart.add(thisProduct.prepareCartProduct());
     }
 
     prepareCartProduct(){
       const thisProduct = this;
 
-      const productSummary = {};
-
-      thisProduct.id = id;
-      thisProduct.name = name;
-      thisProduct.amount = amount;
-
-      let price = thisProduct.data.price;
-      thisProduct.priceSingle = price;
-      thisProduct.price = (price *= thisProduct.amountWidget.value);
-
-      thisProduct.params = {};
+      const productSummary = {
+        price: thisProduct.amountWidget.value * thisProduct.priceSingle,
+        priceSingle: thisProduct.priceSingle,
+        amount: thisProduct.amountWidget.value,
+        id: thisProduct.id,
+        name: thisProduct.data.name,
+        params: thisProduct.prepareCartProductParams(),
+      };
 
       return productSummary;
     }
@@ -289,7 +284,7 @@
           
           if (optionSelected) {
             // option is Selected!
-            optionSelected.add(option);
+            params[paramId].options[optionId] = option.label;
           }
         }
       }
@@ -390,7 +385,7 @@
       thisCart.dom = {};
       thisCart.wrapper = element;
       thisCart.toggleTrigger = thisCart.wrapper.querySelector(select.cart.toggleTrigger);
-      thisCart.productList = thisCart.wrapper.querySelector(select.cart.productList);
+      thisCart.dom.productList = thisCart.wrapper.querySelector(select.cart.productList);
     }
 
     initActions(){
@@ -412,15 +407,23 @@
     add(menuProduct){
       const thisCart = this;
 
-      const generatedHTML = templates.cartProduct(thisCart.data);
+      const generatedHTML = templates.cartProduct(menuProduct);
 
-      thisCart.productList = utils.createDOMFromHTML(generatedHTML);
+      const generatedDOM = utils.createDOMFromHTML(generatedHTML);
 
-      const generatedDOM = document.querySelector(select.containerOf.cart);
-
-      generatedDOM.appendChild(thisCart.productList);
+      thisCart.dom.productList.appendChild(generatedDOM);
       
       console.log('adding product', menuProduct);
+
+      //thisCart.products.push(menuProduct);
+      //console.log('thisCart.products', thisCart.products);
+    }
+  }
+
+  class CartProduct{
+    constructor(){
+      const thisCartProduct = this;
+
     }
   }
 
@@ -450,7 +453,6 @@
       // console.log('templates:', templates);
 
       thisApp.initData();
-
       thisApp.initMenu();
       thisApp.initCart();
     },
