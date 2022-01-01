@@ -74,6 +74,12 @@
     cart: {
       defaultDeliveryFee: 20,
     },
+
+    db: {
+      url: 'http://localhost:3131',
+      products: 'products',
+      orders: 'orders',
+    },
   };
 
   const templates = {
@@ -96,7 +102,7 @@
       thisProduct.initAmountWidget();
       thisProduct.processOrder();
 
-      console.log('new Product:', thisProduct);
+      //console.log('new Product:', thisProduct);
     }
 
     renderInMenu(){
@@ -177,7 +183,7 @@
 
       // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
-      console.log('formData', formData);
+      //console.log('formData', formData);
 
       // set price to default price
       let price = thisProduct.data.price;
@@ -302,8 +308,8 @@
       thisWidget.announce();
       thisWidget.initActions();
 
-      console.log('AmountWidget', thisWidget);
-      console.log('constructor argument', element);
+      //console.log('AmountWidget', thisWidget);
+      //console.log('constructor argument', element);
     }
 
     getElements(element){
@@ -415,7 +421,7 @@
       });
 
       thisCart.dom.productList.addEventListener('remove', function(){
-        thisCart.remove();
+        thisCart.remove(event.detail.cartProduct);
       });
     }
 
@@ -472,10 +478,17 @@
 
     remove(){
       const thisCart = this;
+      
+      const event = new CustomEvent('remove', {
+        bubbles: true,
+        detail: {
+          cartProduct: thisCart,
+        },
+      });
 
-      thisCart.dom.productList.remove();
+      thisCart.dom.productList.remove(event);
 
-      thisCart.products.pop(CartProduct);
+      thisCart.products.pop(CustomEvent);
 
       thisCart.update();
     }
@@ -495,7 +508,7 @@
       thisCartProduct.initAmountWidget();
       thisCartProduct.initActions();
 
-      console.log('CartProduct', thisCartProduct);
+      //console.log('CartProduct', thisCartProduct);
     }
 
     getElements(element){
@@ -532,8 +545,6 @@
       });
       
       thisCartProduct.dom.wrapper.dispatchEvent(event);
-
-      console.log('remove', thisCartProduct.remove);
     }
 
     initActions(){
@@ -546,6 +557,8 @@
       thisCartProduct.dom.remove.addEventListener('click', function(event) {
         event.preventDefault();
         thisCartProduct.remove();
+
+        console.log('remove', thisCartProduct.dom.remove);
       });
     }
   }
@@ -557,14 +570,30 @@
       //console.log('thisApp.data:', thisApp.data);
 
       for (let productData in thisApp.data.products) {
-        new Product(productData, thisApp.data.products[productData]);
+        new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
       }
     },
 
     initData: function(){
       const thisApp = this;
 
-      thisApp.data = dataSource;
+      thisApp.data = {};
+
+      const url = settings.db.url + '/' + settings.db.products;
+
+      fetch(url)
+        .then(function(rawResponse){
+          return rawResponse.json();
+        })
+        .then(function(parsedResponse){
+          console.log('parseResponse', parsedResponse);
+
+          /* save parsedResponse as thisApp.data.products */
+
+          /* execute initMenu method */
+        });
+
+      console.log('thisApp.data', JSON.stringify(thisApp.data));  
     },
 
     init: function(){
