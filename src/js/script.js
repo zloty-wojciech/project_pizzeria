@@ -76,7 +76,7 @@
     },
 
     db: {
-      url: 'http://localhost:3131',
+      url: '//localhost:3131',
       products: 'products',
       orders: 'orders',
     },
