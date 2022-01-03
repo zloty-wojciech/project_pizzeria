@@ -76,7 +76,7 @@
     },
 
     db: {
-      url: '//localhost:3131',
+      url: 'http://localhost:3131',
       products: 'products',
       orders: 'orders',
     },
@@ -476,19 +476,14 @@
       console.log('Total', thisCart.totalPrice, totalNumber);
     }
 
-    remove(){
+    remove(product){
       const thisCart = this;
-      
-      const event = new CustomEvent('remove', {
-        bubbles: true,
-        detail: {
-          cartProduct: thisCart,
-        },
-      });
 
-      thisCart.dom.productList.remove(event);
+      product.dom.wrapper.remove();
 
-      thisCart.products.pop(CustomEvent);
+      const index = thisCart.products.indexOf(product);
+
+      thisCart.products.splice(index, 1);
 
       thisCart.update();
     }
@@ -577,7 +572,7 @@
     initData: function(){
       const thisApp = this;
 
-      thisApp.data = {};
+      thisApp.data = dataSource;
 
       const url = settings.db.url + '/' + settings.db.products;
 
