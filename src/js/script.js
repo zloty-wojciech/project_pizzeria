@@ -503,14 +503,14 @@
       const url = settings.db.url + '/' + settings.db.orders;
       
       const playload = {
-          address: thisCart.dom.address,
-          phone: thisCart.dom.phone,
-          totalPrice: thisCart.dom.totalPrice,
-          subtotalPrice: thisCart.totalPrice - thisCart.dom.deliveryFee,
-          totalNumber: thisCart.dom.totalNumber,
-          deliveryFee: thisCart.dom.deliveryFee,
-          products: thisCart.products
-      }
+        address: thisCart.dom.address,
+        phone: thisCart.dom.phone,
+        totalPrice: thisCart.dom.totalPrice,
+        subtotalPrice: thisCart.totalPrice - thisCart.dom.deliveryFee,
+        totalNumber: thisCart.dom.totalNumber,
+        deliveryFee: thisCart.dom.deliveryFee,
+        products: thisCart.products
+      };
 
       for(let prod of thisCart.products) {
         playload.products.push(prod.getData());
@@ -606,7 +606,7 @@
         priceSingle: thisCartProduct.priceSingle,
         name: thisCartProduct.name,
         params: thisCartProduct.params
-      }
+      };
 
       return prod;
     }
