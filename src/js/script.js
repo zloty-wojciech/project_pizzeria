@@ -503,13 +503,12 @@
       const url = settings.db.url + '/' + settings.db.orders;
       
       const playload = {
-        address: thisCart.dom.address,
-        phone: thisCart.dom.phone,
+        address: thisCart.dom.address.value,
+        phone: thisCart.dom.phone.value,
         totalPrice: thisCart.dom.totalPrice,
         subtotalPrice: thisCart.totalPrice - thisCart.dom.deliveryFee,
         totalNumber: thisCart.dom.totalNumber,
         deliveryFee: thisCart.dom.deliveryFee,
-        products: thisCart.products
       };
 
       for(let prod of thisCart.products) {
